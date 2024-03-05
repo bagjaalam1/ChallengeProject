@@ -94,5 +94,29 @@ namespace ChallengeProject.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpPost]
+
+        public async Task<IActionResult> Delete(Student viewModel)
+        {
+            try
+            {
+                var student = await dbContext.Students
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(s => s.Id == viewModel.Id);
+
+                if(student == null)
+                {
+                    return NotFound();
+                }
+                dbContext.Students.Remove(viewModel);
+                await dbContext.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }
