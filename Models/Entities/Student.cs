@@ -10,6 +10,8 @@
 
         public string Phone { get; set; }
 
+        public Student() {}
+
         public Student(string name, string email, string phone)
         {
             Id = Guid.NewGuid();

@@ -36,7 +36,7 @@ namespace ChallengeProject.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "An error occurred saving the student.");
+                    return StatusCode(500, ex.Message);
                 }
             }
 
@@ -49,6 +49,50 @@ namespace ChallengeProject.Controllers
             var students = await dbContext.Students.ToListAsync();
 
             return View(students);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            try
+            {
+                var student = await dbContext.Students.FindAsync(id);
+
+                if (student == null)
+                {
+                    return NotFound();
+                }
+
+                return View(student);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Student viewModel)
+        {
+            try
+            {
+                var student = await dbContext.Students.FindAsync(viewModel.Id);
+                if (student == null)
+                {
+                    return NotFound();
+                }
+
+                student.Name = viewModel.Name;
+                student.Phone = viewModel.Phone;
+                student.Email = viewModel.Email;
+                await dbContext.SaveChangesAsync();
+                return RedirectToAction("Index"); 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }
